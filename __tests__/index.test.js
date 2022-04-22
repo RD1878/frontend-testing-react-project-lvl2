@@ -65,7 +65,7 @@ describe('actions with any task', () => {
     render(ApplicationWithOneTask);
     userEvent.click(screen.getByRole('checkbox'));
     await waitFor(async () => {
-      expect(await screen.findByText(text)).toBeInTheDocument();
+      expect(screen.getByRole('checkbox')).toBeChecked();
     });
   })
 
@@ -83,7 +83,7 @@ describe('actions with lists', () => {
     render(Application);
     userEvent.click(screen.getByText(/remove list/i).closest('button'))
     await waitFor(async () => {
-      expect(await screen.findByText(/secondary/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/secondary/i)).not.toBeInTheDocument()
     })
   })
 
