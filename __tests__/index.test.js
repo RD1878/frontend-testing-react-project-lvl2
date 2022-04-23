@@ -1,8 +1,7 @@
-import { render, screen, waitFor} from '@testing-library/react';
-import '@testing-library/jest-dom'
-import * as React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import init from '@hexlet/react-todo-app-with-backend';
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event';
 
 const Application = init({
   lists: [
@@ -30,8 +29,7 @@ const ApplicationWithOneTask = init({
 
 describe('App', () => {
   it('render App', () => {
-    render(Application)
-    //screen.debug()
+    render(Application);
     expect(screen.getByText(/hexlet todos/i)).toBeInTheDocument();
     expect(screen.getByText(/lists/i)).toBeInTheDocument();
     expect(screen.getByText('Tasks')).toBeInTheDocument();
@@ -44,8 +42,8 @@ describe('App', () => {
     expect(screen.getByText(/add list/i).closest('button')).toBeInTheDocument();
 
     expect(screen.getByRole('list')).toBeInTheDocument();
-  })
-})
+  });
+});
 
 describe('actions with any task', () => {
   test('add task', async () => {
@@ -57,17 +55,16 @@ describe('actions with any task', () => {
       expect(await screen.findByTestId('tasks')).toBeInTheDocument();
       expect(await screen.findByText(text)).toBeInTheDocument();
       expect(await screen.queryByText('Tasks list is empty')).not.toBeInTheDocument();
-    })
-  })
+    });
+  });
 
   test('check checkbox', async () => {
-    const text = 'test';
     render(ApplicationWithOneTask);
     userEvent.click(screen.getByRole('checkbox'));
     await waitFor(async () => {
       expect(screen.getByRole('checkbox')).toBeChecked();
     });
-  })
+  });
 
   test('remove task', async () => {
     render(ApplicationWithOneTask);
@@ -75,17 +72,17 @@ describe('actions with any task', () => {
     await waitFor(async () => {
       expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
     });
-  })
-})
+  });
+});
 
 describe('actions with lists', () => {
   test('del list', async () => {
     render(Application);
-    userEvent.click(screen.getByText(/remove list/i).closest('button'))
+    userEvent.click(screen.getByText(/remove list/i).closest('button'));
     await waitFor(async () => {
-      expect(screen.queryByText(/secondary/i)).not.toBeInTheDocument()
-    })
-  })
+      expect(screen.queryByText(/secondary/i)).not.toBeInTheDocument();
+    });
+  });
 
   test('add list', async () => {
     const text = 'testList';
@@ -94,12 +91,12 @@ describe('actions with lists', () => {
     userEvent.type(screen.getByPlaceholderText(/List name.../i), text);
     userEvent.click(addListButton);
     await waitFor(async () => {
-      expect(await screen.findByText(text)).toBeInTheDocument()
+      expect(await screen.findByText(text)).toBeInTheDocument();
       expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
-    })
-  })
+    });
+  });
 
-  /*test('change list - add task - del list - add list', async () => {
+  /* test('change list - add task - del list - add list', async () => {
     const textList = 'secondary';
     const textTask = 'test';
     render(Application);
@@ -113,9 +110,9 @@ describe('actions with lists', () => {
     await waitFor(async () => {
       expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
     })
-  })*/
+  }) */
 
-  /*test('add double list', async () => {
+  /* test('add double list', async () => {
     const textList = 'secondary';
     render(Application);
     const addListButton = screen.getByText(/add list/i).closest('button');
@@ -124,9 +121,9 @@ describe('actions with lists', () => {
     await waitFor(async () => {
       expect(await screen.findByText(`${textList} already exists`)).toBeInTheDocument();
     })
-  })*/
+  }) */
 
-  /*test('check two lists', async () => {
+  /* test('check two lists', async () => {
     const textTask1 = 'test1';
     const textTask2 = 'test2';
     render(Application);
@@ -142,6 +139,5 @@ describe('actions with lists', () => {
       expect(await screen.findByText(textTask1)).toBeInTheDocument();
     })
     console.log( await screen.debug());
-  })*/
-})
-
+  }) */
+});
