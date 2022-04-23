@@ -96,6 +96,18 @@ describe('actions with lists', () => {
     });
   });
 
+  test('add list2', async () => {
+    const text = 'testList';
+    render(Application);
+    const addListButton = screen.getByText(/add list/i).closest('button');
+    userEvent.type(screen.getByPlaceholderText(/List name.../i), text);
+    userEvent.click(addListButton);
+    await waitFor(async () => {
+      expect(await screen.findByText(text)).toBeInTheDocument();
+      expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
+    });
+  });
+
   /* test('change list - add task - del list - add list', async () => {
     const textList = 'secondary';
     const textTask = 'test';
