@@ -3,28 +3,32 @@ import '@testing-library/jest-dom';
 import init from '@hexlet/react-todo-app-with-backend';
 import userEvent from '@testing-library/user-event';
 
-const Application = init({
-  lists: [
-    { id: '1', name: 'primary', removable: false },
-    { id: '2', name: 'secondary', removable: true },
-  ],
-  tasks: [],
-  currentListId: '1',
-});
+let Application = null;
 
-const ApplicationWithOneTask = init({
-  lists: [
-    { id: '1', name: 'primary', removable: false },
-    { id: '2', name: 'secondary', removable: true },
-  ],
-  tasks: [{
-    text: 'test',
-    listId: '1',
-    id: '20',
-    completed: false,
-    touched: Date.now(),
-  }],
-  currentListId: '1',
+// const ApplicationWithOneTask = init({
+//   lists: [
+//     { id: '1', name: 'primary', removable: false },
+//     { id: '2', name: 'secondary', removable: true },
+//   ],
+//   tasks: [{
+//     text: 'test',
+//     listId: '1',
+//     id: '20',
+//     completed: false,
+//     touched: Date.now(),
+//   }],
+//   currentListId: '1',
+// });
+
+beforeEach(() => {
+  Application = init({
+    lists: [
+      { id: '1', name: 'primary', removable: false },
+      { id: '2', name: 'secondary', removable: true },
+    ],
+    tasks: [],
+    currentListId: '1',
+  });
 });
 
 describe('App', () => {
@@ -47,36 +51,40 @@ describe('App', () => {
 
 describe('actions with any task', () => {
   test('add task', async () => {
-    const text = 'test';
+    const text = 'new task';
     render(Application);
     userEvent.type(screen.getByPlaceholderText(/Please type text.../i), text);
     userEvent.click(screen.getByText('Add'));
-    await waitFor(async () => {
-      expect(await screen.findByTestId('tasks')).toBeInTheDocument();
-      expect(await screen.findByText(text)).toBeInTheDocument();
-      expect(await screen.queryByText('Tasks list is empty')).not.toBeInTheDocument();
-    });
+    expect(await screen.findByTestId('tasks')).toBeInTheDocument();
+    expect(await screen.findByText(text)).toBeInTheDocument();
   });
 
-  test('check checkbox', async () => {
-    render(ApplicationWithOneTask);
-    userEvent.click(screen.getByRole('checkbox'));
-    await waitFor(async () => {
-      expect(screen.getByRole('checkbox')).toBeChecked();
-    });
-  });
-
-  test('remove task', async () => {
-    render(ApplicationWithOneTask);
-    userEvent.click(screen.getByText('Remove'));
-    await waitFor(async () => {
-      expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
-    });
-  });
+//   test('change/update task', async () => {
+//     render(ApplicationWithOneTask);
+//     userEvent.click(screen.getByRole('checkbox'));
+//     await waitFor(async () => {
+//       expect(screen.getByRole('checkbox')).toBeChecked();
+//     });
+//   });
+//
+//   test('remove task', async () => {
+//     render(ApplicationWithOneTask);
+//     userEvent.click(screen.getByText('Remove'));
+//     await waitFor(async () => {
+//       expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
+//     });
+//   });
 });
 
 describe('actions with lists', () => {
   test('del list', async () => {
+    render(Application);
+    userEvent.click(screen.getByText(/remove list/i).closest('button'));
+    await waitFor(async () => {
+      expect(screen.queryByText(/secondary/i)).not.toBeInTheDocument();
+    });
+  });
+  test('del list2', async () => {
     render(Application);
     userEvent.click(screen.getByText(/remove list/i).closest('button'));
     await waitFor(async () => {
@@ -90,22 +98,8 @@ describe('actions with lists', () => {
     const addListButton = screen.getByText(/add list/i).closest('button');
     userEvent.type(screen.getByPlaceholderText(/List name.../i), text);
     userEvent.click(addListButton);
-    await waitFor(async () => {
-      expect(await screen.findByText(text)).toBeInTheDocument();
-      expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
-    });
-  });
-
-  test('add list2', async () => {
-    const text = 'testList';
-    render(Application);
-    const addListButton = screen.getByText(/add list/i).closest('button');
-    userEvent.type(screen.getByPlaceholderText(/List name.../i), text);
-    userEvent.click(addListButton);
-    await waitFor(async () => {
-      expect(await screen.findByText(text)).toBeInTheDocument();
-      expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
-    });
+    expect(await screen.findByText(text)).toBeInTheDocument();
+    expect(await screen.findByText('Tasks list is empty')).toBeInTheDocument();
   });
 
   /* test('change list - add task - del list - add list', async () => {
